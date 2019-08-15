@@ -1,5 +1,3 @@
-#Install Linux to Win
-
 #!/bin/bash
 #
 #Vars
