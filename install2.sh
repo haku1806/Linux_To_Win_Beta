@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 mounted=0
 GREEN='\033[1;32m';GREEN_D='\033[0;32m';RED='\033[0;31m';YELLOW='\033[0;33m';BLUE='\033[0;34m';NC='\033[0m'
 virtu=$(egrep -i '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l)
@@ -57,3 +56,6 @@ echo -e "Finally open ${GREEN_D}$ip:5${NC} on your VNC viewer."
 echo -e "${YELLOW} COPY BELOW GREEN COLORED COMMAND AND USE RUN AGAIN AFTER QEMU-KVM EXIT Put this to boot from C: disk in next reboot${NC}"
 echo -e "${GREEN}/tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -hda /dev/sda -boot c -vnc :5{NC}"
 sudo /tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -cdrom /mnt/WS2012R2.ISO -hda /dev/sda -boot once=d -vnc :5
+fi
+
+
