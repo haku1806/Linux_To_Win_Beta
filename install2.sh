@@ -5,7 +5,6 @@ virtu=$(egrep -i '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l)
 if [ $virtu = 0 ] ; then echo -e "[Error] ${RED}Virtualization/KVM in your Server/VPS is OFF\nExiting...${NC}";
 else
 dist=$(hostnamectl | egrep "Operating System" | cut -f2 -d":" | cut -f2 -d " ")
-fi
 if [ $dist = "CentOS" ] ; then
 	printf "Y\n" | yum install sudo -y
 	sudo yum install wget vim curl genisoimage -y
@@ -41,10 +40,10 @@ else
 	firstDiskLow=1
 fi
 custom_param_ram="-m "$(expr $availableRAM - 200 )"M"
-echo -e "{GREEN_D}Formating Disk{NC}"
-sudo dd if=/dev/zero of=/dev/sda bs=1024k count=$newDisk
+echo -e "${GREEN_D}Formating Disk${NC}"
+sudo dd if=/dev/zero of=/dev/sda bs=1M count=$newDisk
 sudo mount -t tmpfs -o size=6000m tmpfs /mnt
-echo -e "{GREEN_D}Downloading WIN OS{NC}"
+echo -e "${GREEN_D}Downloading WIN OS${NC}"
 wget -P /mnt http://51.15.226.83/WS2012R2.ISO
 wget -qO- /tmp https://cdn.rodney.io/content/blog/files/vkvm.tar.gz | tar xvz -C /tmp
 free -m 
@@ -52,11 +51,8 @@ availableRAM=$(echo $availableRAMcommand | bash)
 custom_param_ram="-m "$(expr $availableRAM - 200 )"M"
 custom_param_ram2="-m "$(expr $availableRAM - 500 )"M"
 echo $custom_param_ram
-echo -e "{RED}Linux Distro : $dist | CPU cores : $cpus | Available RAM : $availableRAM MB | New Disk: $newDisk{NC}"
-echo -e "Finally open ${GREEN_D}$ip:5${NC} on your VNC viewer."
-echo -e "${YELLOW} COPY BELOW GREEN COLORED COMMAND AND USE RUN AGAIN AFTER QEMU-KVM EXIT Put this to boot from C: disk in next reboot${NC}"
-echo -e "${GREEN}/tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -hda /dev/sda -boot c -vnc :5{NC}"
-sudo /tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -cdrom /mnt/WS2012R2.ISO -hda /dev/sda -boot once=d -vnc :5
-
-
-
+echo -e "${RED} $dist OS | $cpus CPU | Available RAM : $availableRAM MB | New Disk: $newDisk M${NC}"
+echo -e "Finally open ${GREEN_D}$ip:5${NC} on your VNC viewer."echo -e "${YELLOW} COPY BELOW GREEN COLORED COMMAND AND USE RUN AGAIN AFTER QEMU-KVM EXIT Put this to boot from C: disk in next reboot${NC}"
+echo -e "${GREEN}/tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -hda /dev/sda -boot c -vnc :5${NC}"
+sudo /tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -cdrom /mnt/WS2012R2.ISO -hda /dev/sda -boot once=d -vnc :5;
+fi
