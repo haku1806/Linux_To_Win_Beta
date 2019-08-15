@@ -18,6 +18,7 @@ elif [ $dist = "Ubuntu" -o $dist = "Debian" ] ; then
 	sudo apt-get update
 	sudo apt-get install -y qemu-kvm
 fi
+fi
 idx=0
 ip=$(curl ifconfig.me)
 echo "Linux Distro : "$dist 
