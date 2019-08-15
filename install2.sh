@@ -44,7 +44,24 @@ echo -e "${GREEN_D}Formating Disk${NC}"
 sudo dd if=/dev/zero of=/dev/sda bs=1M count=$newDisk
 sudo mount -t tmpfs -o size=6000m tmpfs /mnt
 echo -e "${GREEN_D}Downloading WIN OS${NC}"
-wget -P /mnt http://51.15.226.83/WS2012R2.ISO
+
+link1_status=$(curl -Is http://51.15.226.83/WS2012R2.ISO | grep HTTP | cut -f2 -d" ")
+link2_status=$(curl -Is https://51.15.226.83/WS2012R2.ISO | grep HTTP | cut -f2 -d" ")
+#sudo wget -P /mediabots https://archive.org/download/WS2012R2/WS2012R2.ISO # Windows Server 2012 R2 
+if [ $link1_status = "200" ] ; then 
+	sudo wget -P /mediabots http://51.15.226.83/WS2012R2.ISO
+elif [ $link2_status = "200" -o $link2_status = "301" ] ; then 
+	sudo wget -P /mediabots https://51.15.226.83/WS2012R2.ISO
+else
+	echo -e "${RED}[Error]${NC} ${YELLOW}Sorry! None of Windows OS image urls are available , please report about this issue on Github page : ${NC}https://github.com/mediabots/Linux-to-Windows-with-QEMU"
+	echo "Exiting.."
+	sleep 30
+	exit 1
+fi
+
+#wget -P /mnt http://51.15.226.83/WS2012R2.ISO
+
+
 wget -qO- /tmp https://cdn.rodney.io/content/blog/files/vkvm.tar.gz | tar xvz -C /tmp
 free -m 
 availableRAM=$(echo $availableRAMcommand | bash)
