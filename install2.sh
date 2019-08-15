@@ -4,7 +4,8 @@ GREEN='\033[1;32m';GREEN_D='\033[0;32m';RED='\033[0;31m';YELLOW='\033[0;33m';BLU
 virtu=$(egrep -i '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l)
 if [ $virtu = 0 ] ; then echo -e "[Error] ${RED}Virtualization/KVM in your Server/VPS is OFF\nExiting...${NC}";
 else
-dist=$(hostnamectl | egrep "Operating System" | cut -f2 -d":" | cut -f2 -d " ");
+dist=$(hostnamectl | egrep "Operating System" | cut -f2 -d":" | cut -f2 -d " ")
+fi
 if [ $dist = "CentOS" ] ; then
 	printf "Y\n" | yum install sudo -y
 	sudo yum install wget vim curl genisoimage -y
@@ -17,7 +18,6 @@ elif [ $dist = "Ubuntu" -o $dist = "Debian" ] ; then
 	echo "Updating OS"
 	sudo apt-get update
 	sudo apt-get install -y qemu-kvm
-fi
 fi
 idx=0
 ip=$(curl ifconfig.me)
@@ -57,6 +57,6 @@ echo -e "Finally open ${GREEN_D}$ip:5${NC} on your VNC viewer."
 echo -e "${YELLOW} COPY BELOW GREEN COLORED COMMAND AND USE RUN AGAIN AFTER QEMU-KVM EXIT Put this to boot from C: disk in next reboot${NC}"
 echo -e "${GREEN}/tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -hda /dev/sda -boot c -vnc :5{NC}"
 sudo /tmp/qemu-system-x86_64 -net nic -net user,hostfwd=tcp::3389-:3389 $custom_param_ram -localtime -enable-kvm -cpu host,+nx -M pc -smp $cpus -vga std -usbdevice tablet -k en-us -cdrom /mnt/WS2012R2.ISO -hda /dev/sda -boot once=d -vnc :5
-fi
+
 
 
